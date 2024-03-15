@@ -1,0 +1,33 @@
+{
+  "name": "custom-bitfield",
+  "version": "0.0.1",
+  "description": "A customisable bitfield for your own permissions calculations etc.",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "tsc --watch",
+    "build": "tsc",
+    "lint": "eslint ./src",
+    "format": "prettier ./src --write",
+    "test": "jest",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm test && npm run lint",
+    "preversion": "npm run lint",
+    "version": "npm run format && git add -A src",
+    "postversion": "git push && git push --tags"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/jest": "^29.5.12",
+    "@typescript-eslint/parser": "^7.2.0",
+    "eslint-config-prettier": "^9.1.0",
+    "jest": "^29.7.0",
+    "prettier": "^3.2.5",
+    "ts-jest": "^29.1.2",
+    "typescript": "^5.4.2"
+  },
+  "jest": {
+    "verbose": true,
+    "preset": "ts-jest"
+  }
+}
