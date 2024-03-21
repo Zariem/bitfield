@@ -35,7 +35,7 @@ const myBitField = new BitField(MyFlagMap);
 myBitfield.add(MyFlagMap.EditAccess);
 myBitfield.add(MyFlagMap.ReadAccess);
 myBitfield.addAll([ MyFlagMap.EditAccess, MyFlagMap.ReadAccess ]);
-myBitfield.addAllFromOtherBitfield(someOtherBitfield);
+myBitfield.addAllFromBitfield(someOtherBitfield);
 ```
 
 #### Removing Bits from the Bitfield
@@ -76,11 +76,11 @@ myBitfield.missingFromBitfield(someOtherBitfield);
 ### 5. Advanced Usage:
 In case you wish to use the bitfield with bigints instead of your predefined flags and other bitfields, this is possible as well.
 ```js
-myBitfield.add(0b1110n); // Set the flags for Read, Write and Edit Access. Equivalent: myBitfield.add(14n)
-myBitfield.addAll([ 0b1000n, 0b1100n, 0b0101n ]); // Equivalent: myBitfield.add(0b1101) or myBitfield.add(13n)
+myBitfield.add(0b1110n); // Set the flags for Read, Write and Edit Access.
+myBitfield.addAll([ 0b1000n, 0b1100n, 0b0101n ]); // Equivalent: myBitfield.add(0b1101)
 
 myBitfield.remove(0b0010n); // Remove the flag for Read Access. Equivalent: myBitfield.remove(2n)
-myBitfield.removeAll([ 0b0011n, 0b0001n ]); // Equivalent: myBitfield.remove(0b0011) or myBitfield.remove(3n)
+myBitfield.removeAll([ 0b0011n, 0b0001n ]); // Equivalent: myBitfield.remove(0b0011)
 
 myBitfield.has(0b1100n); // Are ALL the bits present, i.e. do we have Write AND Edit access?
 myBitfield.hasAll([ 0b1100n, 0b0010n ]); // Equivalent: myBitfield.has(0b1110n)

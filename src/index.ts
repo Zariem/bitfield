@@ -9,13 +9,13 @@ export class BitField {
    *
    * @param flagMap - an object that maps strings to bigints. All bigints need to be unique and powers of two.
    * They can be constructed like `1n << 0n` ... `1n << 100n` (to allow for example 101 flags in the map).
-   * 
+   *
    * Check the [README](https://github.com/Zariem/bitfield) for further information on
    * how to construct the flagMap.
    */
   constructor(flagMap: { [s: string]: bigint }) {
     this.flags = Object.values(flagMap);
-    this.checkValidity(flagMap);
+    this.checkValidity();
     this.bitfield = 0n;
   }
 
@@ -40,10 +40,10 @@ export class BitField {
       this.add(b);
     }
   }
-  
+
   /**
    * Adds all bits of another bitfield to this bitfield. Keeps bits that this bitfield already has.
-   * @param otherBitField 
+   * @param otherBitField
    */
   addAllFromBitfield(otherBitField: BitField): void {
     this.add(otherBitField.bitfield);
@@ -152,7 +152,7 @@ export class BitField {
   }
 
   /**
-   * Break down this bitfield into all of its individual bitflags. Only returns bitflags specified in the flagMap of this PermissionsBitfield. 
+   * Break down this bitfield into all of its individual bitflags. Only returns bitflags specified in the flagMap of this PermissionsBitfield.
    * @returns An array of bitflags (that can be found in the flagMap) that combined to form this bitfield.
    */
   toArray(): bigint[] {
@@ -175,10 +175,10 @@ export class BitField {
    * @param bits - the array of bits that we check against
    * @returns An array of flags from the bitfield's flagMap that occur in the `bits` parameter but not in the bitfield.
    */
-   missingFrom(bits: bigint[]): bigint[] {
+  missingFrom(bits: bigint[]): bigint[] {
     let combinedBits: bigint = 0n;
     for (const bit of bits) {
-        combinedBits |= bit;
+      combinedBits |= bit;
     }
     return this.missing(combinedBits);
   }
@@ -192,13 +192,13 @@ export class BitField {
   missingFromBitfield(otherBitfield: BitField): bigint[] {
     return this.missing(otherBitfield.bitfield);
   }
-  
+
   /**
-   * Break down a bitflag or bigint number into all underlying bitflags. Only returns bitflags specified in the flagMap of this PermissionsBitfield. 
+   * Break down a bitflag or bigint number into all underlying bitflags. Only returns bitflags specified in the flagMap of this PermissionsBitfield.
    * @param bits - the bitfield that is to be broken down into seperate bitflags.
    * @returns An array of bitflags (that can be found in the flagMap) that combined to form `bits`.
    */
-   private getAllFlagsOf(bits: bigint) {
+  private getAllFlagsOf(bits: bigint) {
     const result = [];
     for (const value of this.flags) {
       if ((bits & value) === value) {
@@ -215,13 +215,15 @@ export class BitField {
    * (i.e. all numbers contain only one bit that is 1, if represented in binary.)
    * @param flagMap - the flag map that is being checked
    */
-  private checkValidity(flagMap: { [s: string]: bigint }): void {
+  private checkValidity(): void {
     const foundValues: bigint[] = [];
 
     for (const value of this.flags) {
       // check for duplicate values
       if (foundValues.includes(value)) {
-        throw new Error('Found a duplicate value in flag map: "' + value + '" - Please ensure all your values are unique!');
+        throw new Error(
+          'Found a duplicate value in flag map: "' + value + '" - Please ensure all your values are unique!',
+        );
       } else {
         foundValues.push(value);
         // check if the value is a power of two
@@ -229,7 +231,7 @@ export class BitField {
           throw new Error(
             'Found a value that is not a power of two: "' +
               value +
-              '" - Please ensure all your values are powers of two!'
+              '" - Please ensure all your values are powers of two!',
           );
         }
       }
