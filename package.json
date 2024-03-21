@@ -1,7 +1,7 @@
 {
   "name": "custom-bitfield",
   "version": "1.0.0",
-  "description": "A customisable bitfield for your own permissions calculations etc.",
+  "description": "A customisable bitfield that can be used for building e.g. your own permissions system (or similar). Works with any amount of bits.",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
@@ -14,8 +14,32 @@
     "version": "npm run format && git add -A src",
     "postversion": "git push && git push --tags"
   },
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "bitfield",
+    "buffer",
+    "permissions",
+    "custom",
+    "customisable",
+    "customizable",
+    "discord",
+    "permission",
+    "bitfields",
+    "bit",
+    "field",
+    "unlimited",
+    "size",
+    "bigint"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Zariem/bitfield.git"
+  },
+  "author": "Zariem",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/Zariem/deep-profanity-filter/issues"
+  },
+  "homepage": "https://github.com/Zariem/deep-profanity-filter#readme",
   "devDependencies": {
     "@types/jest": "^29.5.12",
     "@typescript-eslint/eslint-plugin": "^7.2.0",
@@ -29,5 +53,8 @@
     "prettier": "^3.2.5",
     "ts-jest": "^29.1.2",
     "typescript": "^5.4.2"
-  }
+  },
+  "files": [
+    "dist/**/*"
+  ]
 }
