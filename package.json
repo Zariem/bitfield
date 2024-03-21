@@ -1,6 +1,6 @@
 {
   "name": "custom-bitfield",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A customisable bitfield that can be used for building e.g. your own permissions system (or similar). Works with any amount of bits.",
   "main": "dist/index.js",
   "scripts": {
