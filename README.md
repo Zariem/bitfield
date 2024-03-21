@@ -1,7 +1,10 @@
 # Custom Bitfield
 
 This is a utility package that allows you to create your own bitfields for things such as permission management for efficient comparison and storage.
-It depends on bigints **(`123n` notation)**, and therefore there 
+It depends on bigints **(`123n` notation)**, and therefore needs a runtime environment that supports `ES2020` features:
+- For node.js projects, you'll need Node.js version 12.9.0 or later.
+- For Typescript projects, you'll need to set `"target": "ES2020"` or anything above `ES2020` in your `tsconfig.json`.
+Older versions of different internet browsers might not support this feature, please refer to https://caniuse.com/bigint for further information.
 
 ## Usage:
 ### 1. Create a Flag Map
