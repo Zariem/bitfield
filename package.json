@@ -37,9 +37,9 @@
   "author": "Zariem",
   "license": "BSD-2-Clause",
   "bugs": {
-    "url": "https://github.com/Zariem/deep-profanity-filter/issues"
+    "url": "https://github.com/Zariem/bitfield/issues"
   },
-  "homepage": "https://github.com/Zariem/deep-profanity-filter#readme",
+  "homepage": "https://github.com/Zariem/bitfield#readme",
   "devDependencies": {
     "@types/jest": "^29.5.12",
     "@typescript-eslint/eslint-plugin": "^7.2.0",
