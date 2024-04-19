@@ -2185,3 +2185,161 @@ test('reset', () => {
   expect(customBitField3.has(TestPermissions.P71)).toEqual(false);
   expect(customBitField3.has(TestPermissions.P72)).toEqual(false);
 });
+
+test('toString', () => {
+  expect(emptyBitField.toString()).toEqual('0');
+  expect(oneBitBitField.toString()).toEqual('1');
+  expect(multiBitField.toString()).toEqual('1330471504277772699672');
+  expect(multiBitFieldRemove.toString()).toEqual('541065224');
+  expect(fullBitField.toString()).toEqual('4722366482869645213695');
+  expect(multiBitFieldClone.toString()).toEqual('1330471504277772699672');
+  expect(multiBitFieldClone2.toString()).toEqual('1330471504277772699679');
+  expect(customBitField2.toString()).toEqual('1330471504277772697624');
+  expect(customBitField3.toString()).toEqual('0');
+});
+
+test('fromStringUnsafe', () => {
+  const testBitField = new BitField(TestPermissions);
+  testBitField.fromStringUnsafe('0');
+  expect(testBitField.toArray()).toStrictEqual([]);
+  
+  testBitField.fromStringUnsafe(oneBitBitField.toString());
+  expect(testBitField.toArray()).toStrictEqual([TestPermissions.P01]);
+
+  testBitField.fromStringUnsafe(multiBitField.toString());
+  expect(testBitField.hasAllFromBitfield(multiBitField) && multiBitField.hasAllFromBitfield(testBitField)).toBe(true);
+
+  testBitField.fromStringUnsafe(multiBitFieldRemove.toString());
+  expect(testBitField.hasAllFromBitfield(multiBitFieldRemove) && multiBitFieldRemove.hasAllFromBitfield(testBitField)).toBe(true);
+
+  testBitField.fromStringUnsafe(fullBitField.toString());
+  expect(testBitField.hasAllFromBitfield(fullBitField) && fullBitField.hasAllFromBitfield(testBitField)).toBe(true);
+  
+  testBitField.fromStringUnsafe(multiBitFieldClone.toString());
+  expect(testBitField.hasAllFromBitfield(multiBitFieldClone) && multiBitFieldClone.hasAllFromBitfield(testBitField)).toBe(true);
+  
+  testBitField.fromStringUnsafe(multiBitFieldClone2.toString());
+  expect(testBitField.hasAllFromBitfield(multiBitFieldClone2) && multiBitFieldClone2.hasAllFromBitfield(testBitField)).toBe(true);
+  
+  testBitField.fromStringUnsafe(customBitField2.toString());
+  expect(testBitField.hasAllFromBitfield(customBitField2) && customBitField2.hasAllFromBitfield(testBitField)).toBe(true);
+  
+  testBitField.fromStringUnsafe(customBitField3.toString());
+  expect(testBitField.hasAllFromBitfield(customBitField3) && customBitField3.hasAllFromBitfield(testBitField)).toBe(true);
+
+  expect(() => {
+    testBitField.fromStringUnsafe('abc');
+  }).toThrow();
+
+  expect(() => {
+    testBitField.fromStringUnsafe('');
+  }).not.toThrow();
+
+  expect(() => {
+    testBitField.fromStringUnsafe('-1');
+  }).not.toThrow();
+
+  expect(() => {
+    testBitField.fromStringUnsafe('4722366482869645213696');
+  }).not.toThrow(); // 73rd bit set
+
+  testBitField.fromStringUnsafe('4722366482869645213696');
+  expect(testBitField.hasAllFromBitfield(emptyBitField) && emptyBitField.hasAllFromBitfield(testBitField));
+
+  expect(() => {
+    testBitField.fromStringUnsafe('9444732965739290427391');
+  }).not.toThrow(); // 73 bits all full
+
+  testBitField.fromStringUnsafe('9444732965739290427391');
+  expect(testBitField.hasAllFromBitfield(fullBitField) && fullBitField.hasAllFromBitfield(testBitField));
+});
+
+test('fromStringSafe', () => {
+  const testBitField = new BitField(TestPermissions);
+  testBitField.fromStringSafe('0');
+  expect(testBitField.toArray()).toStrictEqual([]);
+  
+  testBitField.fromStringSafe(oneBitBitField.toString());
+  expect(testBitField.toArray()).toStrictEqual([TestPermissions.P01]);
+
+  testBitField.fromStringSafe(multiBitField.toString());
+  expect(testBitField.hasAllFromBitfield(multiBitField) && multiBitField.hasAllFromBitfield(testBitField)).toBe(true);
+
+  testBitField.fromStringSafe(multiBitFieldRemove.toString());
+  expect(testBitField.hasAllFromBitfield(multiBitFieldRemove) && multiBitFieldRemove.hasAllFromBitfield(testBitField)).toBe(true);
+
+  testBitField.fromStringSafe(fullBitField.toString());
+  expect(testBitField.hasAllFromBitfield(fullBitField) && fullBitField.hasAllFromBitfield(testBitField)).toBe(true);
+  
+  testBitField.fromStringSafe(multiBitFieldClone.toString());
+  expect(testBitField.hasAllFromBitfield(multiBitFieldClone) && multiBitFieldClone.hasAllFromBitfield(testBitField)).toBe(true);
+  
+  testBitField.fromStringSafe(multiBitFieldClone2.toString());
+  expect(testBitField.hasAllFromBitfield(multiBitFieldClone2) && multiBitFieldClone2.hasAllFromBitfield(testBitField)).toBe(true);
+  
+  testBitField.fromStringSafe(customBitField2.toString());
+  expect(testBitField.hasAllFromBitfield(customBitField2) && customBitField2.hasAllFromBitfield(testBitField)).toBe(true);
+  
+  testBitField.fromStringSafe(customBitField3.toString());
+  expect(testBitField.hasAllFromBitfield(customBitField3) && customBitField3.hasAllFromBitfield(testBitField)).toBe(true);
+
+  expect(() => {
+    testBitField.fromStringSafe('abc');
+  }).toThrow();
+
+  expect(() => {
+    testBitField.fromStringSafe('');
+  }).toThrow();
+
+  expect(() => {
+    testBitField.fromStringSafe('-1');
+  }).toThrow();
+
+  expect(() => {
+    testBitField.fromStringSafe('4722366482869645213696');
+  }).toThrow(); // 73rd bit set
+
+  expect(() => {
+    testBitField.fromStringSafe('9444732965739290427391');
+  }).toThrow(); // 73 bits all full
+});
+
+test('isValidValue', () => {
+  const testBitField = new BitField(TestPermissions);
+
+  expect(testBitField.isValidValue('0')).toBe(true);
+  expect(testBitField.isValidValue(oneBitBitField.toString())).toBe(true);
+  expect(testBitField.isValidValue(multiBitField.toString())).toBe(true);
+  expect(testBitField.isValidValue(multiBitFieldRemove.toString())).toBe(true);
+  expect(testBitField.isValidValue(fullBitField.toString())).toBe(true);
+  expect(testBitField.isValidValue(multiBitFieldClone.toString())).toBe(true);
+  expect(testBitField.isValidValue(multiBitFieldClone2.toString())).toBe(true);
+  expect(testBitField.isValidValue(customBitField2.toString())).toBe(true);
+  expect(testBitField.isValidValue(customBitField3.toString())).toBe(true);
+  expect(testBitField.isValidValue('abc')).toBe(false);
+  expect(testBitField.isValidValue('')).toBe(false);
+  expect(testBitField.isValidValue('-1')).toBe(false);
+  expect(testBitField.isValidValue('4722366482869645213696')).toBe(false);
+  expect(testBitField.isValidValue('9444732965739290427391')).toBe(false);
+  expect(testBitField.isValidValue('4722366482869645213695')).toBe(true);
+});
+
+test('isValidValueSoft', () => {
+  const testBitField = new BitField(TestPermissions);
+
+  expect(testBitField.isValidValueSoft('0')).toBe(true);
+  expect(testBitField.isValidValueSoft(oneBitBitField.toString())).toBe(true);
+  expect(testBitField.isValidValueSoft(multiBitField.toString())).toBe(true);
+  expect(testBitField.isValidValueSoft(multiBitFieldRemove.toString())).toBe(true);
+  expect(testBitField.isValidValueSoft(fullBitField.toString())).toBe(true);
+  expect(testBitField.isValidValueSoft(multiBitFieldClone.toString())).toBe(true);
+  expect(testBitField.isValidValueSoft(multiBitFieldClone2.toString())).toBe(true);
+  expect(testBitField.isValidValueSoft(customBitField2.toString())).toBe(true);
+  expect(testBitField.isValidValueSoft(customBitField3.toString())).toBe(true);
+  expect(testBitField.isValidValueSoft('abc')).toBe(false);
+  expect(testBitField.isValidValueSoft('')).toBe(true);
+  expect(testBitField.isValidValueSoft('-1')).toBe(false);
+  expect(testBitField.isValidValueSoft('4722366482869645213696')).toBe(true);
+  expect(testBitField.isValidValueSoft('9444732965739290427391')).toBe(true);
+  expect(testBitField.isValidValueSoft('4722366482869645213695')).toBe(true);
+});

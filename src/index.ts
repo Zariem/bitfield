@@ -1,6 +1,7 @@
 export class BitField {
   private bitfield: bigint;
   private flags: bigint[];
+  private fullBitfield: bigint; // the bitfield that has all flags from the flagMap set
 
   /**
    * Creates a new bitfield and initialises it to 0 (no flags set).
@@ -15,7 +16,8 @@ export class BitField {
    */
   constructor(flagMap: { [s: string]: bigint }) {
     this.flags = Object.values(flagMap);
-    this.checkValidity();
+    this.checkFlagMapValidity();
+    this.fullBitfield = this.calcFullBitfield();
     this.bitfield = 0n;
   }
 
@@ -194,6 +196,104 @@ export class BitField {
   }
 
   /**
+   * Turns the bitfield's value into a base-10 number (digits from 0-9) and represents it as a string.
+   * Can be used to serialise or store the bitfield as a string. To deserialise, use `fromString(str)`.
+   * @returns The serialisable bitfield value as a string.
+   */
+  toString(): string {
+    return this.bitfield.toString();
+  }
+
+  /**
+   * Fills the bitfield's value through a base-10 number given from a string. Should only be used with values
+   * previously converted with `bitfield.toString()` and checked for validity with `isValidValue(str)`.
+   * 
+   * Does __no__ checks on whether the given number is negative, or on whether all bits that are set in the
+   * given value also occur in the flagMap. Given an empty string, turns it into an empty bitfield.
+   * 
+   * If you wish to discard any invalid numbers, use `isValidValue(str)` first.
+   * If you want the special cases to throw errors instead, use `fromStringSafe(str)` instead.
+   * 
+   * @param str - the string used to initialise the bitfield
+   * @throws SyntaxError if the given input string cannot be parsed as a BigInt.
+   */
+  fromStringUnsafe(str: string): void {
+    this.bitfield = BigInt(str);
+  }
+
+  /**
+   * Fills the bitfield's value through a base-10 number given from a string. Should only be used with values
+   * previously converted with `bitfield.toString()`.
+   * 
+   * Automatically checks for string validity and resets the bitfield to 0 if the
+   * value is not a number, or if the value contains any bits which the flagMap doesn't contain.
+   * For an unsafe alternative that accepts numbers that are larger than what the flagMap supports, use `fromStringUnsafe(str)`.
+   * @param str - the string used to initialise the bitfield
+   * @throws SyntaxError if the given input string cannot be parsed as a BigInt.
+   * @throws RangeError if the given input string is a negative number.
+   * @throws RangeError if the given input string contains more bits than the flag map supports.
+   */
+  fromStringSafe(str: string): void {
+    this.reset();
+    if (str.length === 0) {
+      throw new SyntaxError('BitField does not support fromString() calls with empty strings.');
+    }
+    const bits = BigInt(str); // throws an error if it is not a number
+    if (bits < 0n) {
+      throw new RangeError('BitField does not support fromString() calls with negative numbers. (' + bits + ')');
+    }
+    if ((bits & ~this.fullBitfield) !== 0n) {
+      throw new RangeError('BitField does not support fromString() with numbers that do not fit the given flagMap. ' +
+        'Given number had some bits set that the flagmap does not support.');
+    }
+    this.bitfield = bits;
+  }
+
+  /**
+   * Checks whether a given string would convert to be a valid bitfield value. This returns false if the string
+   * can not be parsed as a number, is empty, is negative (< 0n) or if it contains more bits than the bitfield supports.
+   * 
+   * If you only care about checking if the value is a valid number and non-negative, but don't care about it containing
+   * more bits than the bitfield supports, use `isValidValueSoft(str)`.
+   * 
+   * @param str - the string to be checked for validity to initialise the bitfield
+   * @returns true if the input string can be used to initialise this bitfield with `bitfield.fromStringUnsafe(str)`
+   */
+  isValidValue(str: string): boolean {
+    if (str.length === 0) {
+      return false;
+    }
+    try {
+      const bits = BigInt(str);
+      return (bits >= 0n && (bits & ~this.fullBitfield) === 0n); // ensure only bits of the bitfield are set
+    } catch (error) {
+      return false;
+    }
+  }
+
+  /**
+   * A more lenient function to check validity than `isValidValue(str)`.
+   * 
+   * Checks whether a given string would convert to be a valid bitfield value. This returns false if the string
+   * can not be parsed as a number, or if it is negative (<0n).
+   * 
+   * Does __not__ check if it contains more bits than the bitfield supports. If you want this functionality, use
+   * `isValidValue(str)`.
+   * __Allows empty strings__ as these will be parsed as an empty bitfield with `fromStringUnsafe('')`.
+   * 
+   * @param str - the string to be checked for validity to initialise the bitfield
+   * @returns true if the input string can be used to initialise this bitfield with `bitfield.fromStringUnsafe(str)`
+   */
+  isValidValueSoft(str: string): boolean {
+    try {
+      const bits = BigInt(str);
+      return (bits >= 0n);
+    } catch (error) {
+      return false;
+    }
+  }
+
+  /**
    * Break down a bitflag or bigint number into all underlying bitflags. Only returns bitflags specified in the flagMap of this PermissionsBitfield.
    * @param bits - the bitfield that is to be broken down into seperate bitflags.
    * @returns An array of bitflags (that can be found in the flagMap) that combined to form `bits`.
@@ -208,14 +308,13 @@ export class BitField {
     return result;
   }
 
-  // check whether all numbers in the map are valid
   /**
    * Checks whether all the number values in the flag map are valid.
    * This ensures that there are no duplicate numbers, and all numbers are powers of two
    * (i.e. all numbers contain only one bit that is 1, if represented in binary.)
    * @param flagMap - the flag map that is being checked
    */
-  private checkValidity(): void {
+  private checkFlagMapValidity(): void {
     const foundValues: bigint[] = [];
 
     for (const value of this.flags) {
@@ -236,5 +335,17 @@ export class BitField {
         }
       }
     }
+  }
+
+  /**
+   * Create a bitfield from the flag map, where every flag is set to true.
+   * @returns - a bitfield that contains all flags that the flag map has
+   */
+  private calcFullBitfield(): bigint {
+    let tempBitfield = 0n;
+    for (const value of this.flags) {
+      tempBitfield |= value; // add all the flags to the full bitfield
+    }
+    return tempBitfield;
   }
 }

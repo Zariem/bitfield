@@ -77,7 +77,55 @@ myBitfield.missingFrom([ MyFlagMap.ReadAccess, MyFlagMap.AdminAccess ]); // [ My
 myBitfield.missingFromBitfield(someOtherBitfield);
 ```
 
-### 5. Advanced Usage:
+### 5. Serialise and Deserialise (Store and Load) the Bitfield
+```js
+const stringToStore = myBitfield.toString();
+
+// some storing and loading functionality...
+// const loadedBitField = database.load(...)
+
+// Important! Use same flag map as for the stored values!
+const myNewBitField = new BitField(MyFlagMap);
+
+try { // Unsafe conversion.
+	myNewBitField.fromStringUnsafe(loadedBitField);
+} catch (error) {
+	console.log('Loaded Bit Field was not a number.', error);
+}
+
+try { // Safe conversion.
+	myNewBitField.fromStringSafe(loadedBitField);
+} catch (error) {
+	// String was empty, not a number, a negative number,
+	// or had bits set that are not specified in the flag map.
+	console.log(error);
+}
+
+// Safety checks:
+if (myNewBitField.isValidValue(loadedBitField)) {
+	try {
+		myNewBitField.fromStringUnsafe(loadedBitField);
+	} catch (error) {
+		console.log('This catch should never happen.', error);
+	}
+} else {
+	// String was empty, not a number, a negative number,
+	// or had bits set that are not specified in the flag map.
+}
+
+if (myNewBitField.isValidValueSoft(loadedBitField)) {
+	try {
+		myNewBitField.fromStringUnsafe(loadedBitField);
+	} catch (error) {
+		console.log('This catch should never happen.', error);
+	}
+} else {
+	// String was not a number or a negative number.
+}
+```
+
+
+### 6. Advanced Usage:
 In case you wish to use the bitfield with bigints instead of your predefined flags and other bitfields, this is possible as well.
 ```js
 myBitfield.add(0b1110n); // Set the flags for Read, Write and Edit Access.
