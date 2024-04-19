@@ -207,13 +207,13 @@ export class BitField {
   /**
    * Fills the bitfield's value through a base-10 number given from a string. Should only be used with values
    * previously converted with `bitfield.toString()` and checked for validity with `isValidValue(str)`.
-   * 
+   *
    * Does __no__ checks on whether the given number is negative, or on whether all bits that are set in the
    * given value also occur in the flagMap. Given an empty string, turns it into an empty bitfield.
-   * 
+   *
    * If you wish to discard any invalid numbers, use `isValidValue(str)` first.
    * If you want the special cases to throw errors instead, use `fromStringSafe(str)` instead.
-   * 
+   *
    * @param str - the string used to initialise the bitfield
    * @throws SyntaxError if the given input string cannot be parsed as a BigInt.
    */
@@ -224,7 +224,7 @@ export class BitField {
   /**
    * Fills the bitfield's value through a base-10 number given from a string. Should only be used with values
    * previously converted with `bitfield.toString()`.
-   * 
+   *
    * Automatically checks for string validity and resets the bitfield to 0 if the
    * value is not a number, or if the value contains any bits which the flagMap doesn't contain.
    * For an unsafe alternative that accepts numbers that are larger than what the flagMap supports, use `fromStringUnsafe(str)`.
@@ -243,8 +243,10 @@ export class BitField {
       throw new RangeError('BitField does not support fromString() calls with negative numbers. (' + bits + ')');
     }
     if ((bits & ~this.fullBitfield) !== 0n) {
-      throw new RangeError('BitField does not support fromString() with numbers that do not fit the given flagMap. ' +
-        'Given number had some bits set that the flagmap does not support.');
+      throw new RangeError(
+        'BitField does not support fromString() with numbers that do not fit the given flagMap. ' +
+          'Given number had some bits set that the flagmap does not support.',
+      );
     }
     this.bitfield = bits;
   }
@@ -252,10 +254,10 @@ export class BitField {
   /**
    * Checks whether a given string would convert to be a valid bitfield value. This returns false if the string
    * can not be parsed as a number, is empty, is negative (< 0n) or if it contains more bits than the bitfield supports.
-   * 
+   *
    * If you only care about checking if the value is a valid number and non-negative, but don't care about it containing
    * more bits than the bitfield supports, use `isValidValueSoft(str)`.
-   * 
+   *
    * @param str - the string to be checked for validity to initialise the bitfield
    * @returns true if the input string can be used to initialise this bitfield with `bitfield.fromStringUnsafe(str)`
    */
@@ -265,7 +267,7 @@ export class BitField {
     }
     try {
       const bits = BigInt(str);
-      return (bits >= 0n && (bits & ~this.fullBitfield) === 0n); // ensure only bits of the bitfield are set
+      return bits >= 0n && (bits & ~this.fullBitfield) === 0n; // ensure only bits of the bitfield are set
     } catch (error) {
       return false;
     }
@@ -273,21 +275,21 @@ export class BitField {
 
   /**
    * A more lenient function to check validity than `isValidValue(str)`.
-   * 
+   *
    * Checks whether a given string would convert to be a valid bitfield value. This returns false if the string
    * can not be parsed as a number, or if it is negative (<0n).
-   * 
+   *
    * Does __not__ check if it contains more bits than the bitfield supports. If you want this functionality, use
    * `isValidValue(str)`.
    * __Allows empty strings__ as these will be parsed as an empty bitfield with `fromStringUnsafe('')`.
-   * 
+   *
    * @param str - the string to be checked for validity to initialise the bitfield
    * @returns true if the input string can be used to initialise this bitfield with `bitfield.fromStringUnsafe(str)`
    */
   isValidValueSoft(str: string): boolean {
     try {
       const bits = BigInt(str);
-      return (bits >= 0n);
+      return bits >= 0n;
     } catch (error) {
       return false;
     }

@@ -2202,7 +2202,7 @@ test('fromStringUnsafe', () => {
   const testBitField = new BitField(TestPermissions);
   testBitField.fromStringUnsafe('0');
   expect(testBitField.toArray()).toStrictEqual([]);
-  
+
   testBitField.fromStringUnsafe(oneBitBitField.toString());
   expect(testBitField.toArray()).toStrictEqual([TestPermissions.P01]);
 
@@ -2210,22 +2210,32 @@ test('fromStringUnsafe', () => {
   expect(testBitField.hasAllFromBitfield(multiBitField) && multiBitField.hasAllFromBitfield(testBitField)).toBe(true);
 
   testBitField.fromStringUnsafe(multiBitFieldRemove.toString());
-  expect(testBitField.hasAllFromBitfield(multiBitFieldRemove) && multiBitFieldRemove.hasAllFromBitfield(testBitField)).toBe(true);
+  expect(
+    testBitField.hasAllFromBitfield(multiBitFieldRemove) && multiBitFieldRemove.hasAllFromBitfield(testBitField),
+  ).toBe(true);
 
   testBitField.fromStringUnsafe(fullBitField.toString());
   expect(testBitField.hasAllFromBitfield(fullBitField) && fullBitField.hasAllFromBitfield(testBitField)).toBe(true);
-  
+
   testBitField.fromStringUnsafe(multiBitFieldClone.toString());
-  expect(testBitField.hasAllFromBitfield(multiBitFieldClone) && multiBitFieldClone.hasAllFromBitfield(testBitField)).toBe(true);
-  
+  expect(
+    testBitField.hasAllFromBitfield(multiBitFieldClone) && multiBitFieldClone.hasAllFromBitfield(testBitField),
+  ).toBe(true);
+
   testBitField.fromStringUnsafe(multiBitFieldClone2.toString());
-  expect(testBitField.hasAllFromBitfield(multiBitFieldClone2) && multiBitFieldClone2.hasAllFromBitfield(testBitField)).toBe(true);
-  
+  expect(
+    testBitField.hasAllFromBitfield(multiBitFieldClone2) && multiBitFieldClone2.hasAllFromBitfield(testBitField),
+  ).toBe(true);
+
   testBitField.fromStringUnsafe(customBitField2.toString());
-  expect(testBitField.hasAllFromBitfield(customBitField2) && customBitField2.hasAllFromBitfield(testBitField)).toBe(true);
-  
+  expect(testBitField.hasAllFromBitfield(customBitField2) && customBitField2.hasAllFromBitfield(testBitField)).toBe(
+    true,
+  );
+
   testBitField.fromStringUnsafe(customBitField3.toString());
-  expect(testBitField.hasAllFromBitfield(customBitField3) && customBitField3.hasAllFromBitfield(testBitField)).toBe(true);
+  expect(testBitField.hasAllFromBitfield(customBitField3) && customBitField3.hasAllFromBitfield(testBitField)).toBe(
+    true,
+  );
 
   expect(() => {
     testBitField.fromStringUnsafe('abc');
@@ -2258,7 +2268,7 @@ test('fromStringSafe', () => {
   const testBitField = new BitField(TestPermissions);
   testBitField.fromStringSafe('0');
   expect(testBitField.toArray()).toStrictEqual([]);
-  
+
   testBitField.fromStringSafe(oneBitBitField.toString());
   expect(testBitField.toArray()).toStrictEqual([TestPermissions.P01]);
 
@@ -2266,22 +2276,32 @@ test('fromStringSafe', () => {
   expect(testBitField.hasAllFromBitfield(multiBitField) && multiBitField.hasAllFromBitfield(testBitField)).toBe(true);
 
   testBitField.fromStringSafe(multiBitFieldRemove.toString());
-  expect(testBitField.hasAllFromBitfield(multiBitFieldRemove) && multiBitFieldRemove.hasAllFromBitfield(testBitField)).toBe(true);
+  expect(
+    testBitField.hasAllFromBitfield(multiBitFieldRemove) && multiBitFieldRemove.hasAllFromBitfield(testBitField),
+  ).toBe(true);
 
   testBitField.fromStringSafe(fullBitField.toString());
   expect(testBitField.hasAllFromBitfield(fullBitField) && fullBitField.hasAllFromBitfield(testBitField)).toBe(true);
-  
+
   testBitField.fromStringSafe(multiBitFieldClone.toString());
-  expect(testBitField.hasAllFromBitfield(multiBitFieldClone) && multiBitFieldClone.hasAllFromBitfield(testBitField)).toBe(true);
-  
+  expect(
+    testBitField.hasAllFromBitfield(multiBitFieldClone) && multiBitFieldClone.hasAllFromBitfield(testBitField),
+  ).toBe(true);
+
   testBitField.fromStringSafe(multiBitFieldClone2.toString());
-  expect(testBitField.hasAllFromBitfield(multiBitFieldClone2) && multiBitFieldClone2.hasAllFromBitfield(testBitField)).toBe(true);
-  
+  expect(
+    testBitField.hasAllFromBitfield(multiBitFieldClone2) && multiBitFieldClone2.hasAllFromBitfield(testBitField),
+  ).toBe(true);
+
   testBitField.fromStringSafe(customBitField2.toString());
-  expect(testBitField.hasAllFromBitfield(customBitField2) && customBitField2.hasAllFromBitfield(testBitField)).toBe(true);
-  
+  expect(testBitField.hasAllFromBitfield(customBitField2) && customBitField2.hasAllFromBitfield(testBitField)).toBe(
+    true,
+  );
+
   testBitField.fromStringSafe(customBitField3.toString());
-  expect(testBitField.hasAllFromBitfield(customBitField3) && customBitField3.hasAllFromBitfield(testBitField)).toBe(true);
+  expect(testBitField.hasAllFromBitfield(customBitField3) && customBitField3.hasAllFromBitfield(testBitField)).toBe(
+    true,
+  );
 
   expect(() => {
     testBitField.fromStringSafe('abc');
